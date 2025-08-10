@@ -105,4 +105,8 @@ func envSetup() {
 	viper.SetEnvPrefix("LOGINAPP")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 	viper.AutomaticEnv()
+	// Bind web.usernamesuffix to USERNAME_SUFFIX_FOR_CONFIG env var
+	if err := viper.BindEnv("web.usernamesuffix", "USERNAME_SUFFIX_FOR_CONFIG"); err != nil {
+		log.Fatalf("failed to bind environment variable: %v", err)
+	}
 }

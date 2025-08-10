@@ -18,6 +18,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"regexp"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -47,6 +48,7 @@ func (a *App) Init() error {
 		{!a.OIDC.Issuer.InsecureSkipVerify && a.OIDC.Issuer.RootCA == "", "no oidc.issuer.rootCA specified", nil},
 		{a.TLS.Enabled && a.TLS.Cert == "", "no tls.cert specified", nil},
 		{a.TLS.Enabled && a.TLS.Key == "", "no tls.key specified", nil},
+		{a.Web.UsernameSuffix != "" && !isValidSuffix(a.Web.UsernameSuffix), "invalid web.usernameSuffix specified", nil},
 	}
 
 	if configCheck(errorChecks) {
@@ -106,4 +108,10 @@ func randomString() string {
 		log.Fatal(err)
 	}
 	return hex.EncodeToString(b)
+}
+
+func isValidSuffix(suffix string) bool {
+	// alphanumeric, dash, lowercase, starting with a letter
+	r := regexp.MustCompile("^[a-z][a-z0-9-]*$")
+	return r.MatchString(suffix)
 }
