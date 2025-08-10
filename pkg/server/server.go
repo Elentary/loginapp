@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/fydrah/loginapp/pkg/client"
@@ -70,13 +71,18 @@ func (s *Server) ProcessCallback(w http.ResponseWriter, r *http.Request) (KubeUs
 		http.Error(w, msg, http.StatusInternalServerError)
 		return KubeUserInfo{}, fmt.Errorf(msg)
 	}
+	suffix := os.Getenv("LOGINAPP_USERNAME_CLAIM_SUFFIX")
+	username := usernameClaim.(string)
+	if suffix != "" {
+		username = username + suffix
+	}
 	log.Debugf("token issued with claims: %v", jsonClaims)
 	return KubeUserInfo{
 		IDToken:       rawIDToken,
 		RefreshToken:  token.RefreshToken,
 		RedirectURL:   s.Config.OIDC.Issuer.URL,
 		Claims:        jsonClaims,
-		UsernameClaim: usernameClaim.(string),
+		UsernameClaim: username,
 		AppConfig:     s.Config,
 	}, nil
 }
