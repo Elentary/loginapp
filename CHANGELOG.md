@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - More prometheus metrics
 - More UX improvements
+- Allow appending a custom suffix to username claims via the
+  `LOGINAPP_USERNAME_CLAIM_SUFFIX` environment variable
 
 ## [v3.2.0] - 2020-11-25
 

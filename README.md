@@ -18,6 +18,8 @@ Loginapp supports three configuration formats:
 * Environment vars: each flag provides an environment var with
   'LOGINAPP_' prefix.
   Ex: '--oidc-client-secret' --> 'LOGINAPP_OIDC_CLIENT_SECRET'
+  A custom suffix can be appended to the username claim by setting the
+  `LOGINAPP_USERNAME_CLAIM_SUFFIX` environment variable.
 
 Configuration precedence: flags > environment vars > configuration file
 
