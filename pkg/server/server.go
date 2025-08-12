@@ -20,6 +20,7 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/fydrah/loginapp/pkg/client"
 	"github.com/fydrah/loginapp/pkg/config"
@@ -70,13 +71,19 @@ func (s *Server) ProcessCallback(w http.ResponseWriter, r *http.Request) (KubeUs
 		http.Error(w, msg, http.StatusInternalServerError)
 		return KubeUserInfo{}, fmt.Errorf(msg)
 	}
+	username := usernameClaim.(string)
+	if s.Config.Web.MainUsernameClaim == "email" && s.Config.Web.UsernameSuffix != "" {
+		if atIndex := strings.Index(username, "@"); atIndex != -1 {
+			username = fmt.Sprintf("%s@%s", username[:atIndex], s.Config.Web.UsernameSuffix)
+		}
+	}
 	log.Debugf("token issued with claims: %v", jsonClaims)
 	return KubeUserInfo{
 		IDToken:       rawIDToken,
 		RefreshToken:  token.RefreshToken,
 		RedirectURL:   s.Config.OIDC.Issuer.URL,
 		Claims:        jsonClaims,
-		UsernameClaim: usernameClaim.(string),
+		UsernameClaim: username,
 		AppConfig:     s.Config,
 	}, nil
 }

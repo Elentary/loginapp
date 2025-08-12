@@ -128,6 +128,7 @@ func (t *TLS) AddFlags(cmd *cobra.Command) {
 // Web is the web output configuration, mainly used to customize output
 type Web struct {
 	MainUsernameClaim string
+	UsernameSuffix    string
 	MainClientID      string
 	TemplatesDir      string
 	AssetsDir         string
@@ -137,6 +138,7 @@ type Web struct {
 // AddFlags init web flags
 func (w *Web) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().String("web-mainusernameclaim", "email", "Claim to use for username (depends on IDP available claims")
+	cmd.Flags().String("web-usernamesuffix", "", "Username suffix to add to username claim. Disabled if empty.")
 	cmd.Flags().String("web-mainclientid", "", "Application client ID")
 	cmd.Flags().String("web-templatesdir", "/web/templates", "Directory to look for templates, which are overriding embedded")
 	cmd.Flags().String("web-assetsdir", "/web/assets", "Directory to look for assets, which are overriding embedded")
